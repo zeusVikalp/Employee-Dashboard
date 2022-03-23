@@ -7,10 +7,16 @@ function EmpDashboard (){
     const[inputRole,setInputRole] = React.useState("")
     const[inputSalary,setInputSalary] = React.useState("")
     const[Props,setProps] = React.useState([])
+    
+
 
     React.useEffect(()=>{
         getProps()
     },[]);
+
+    React.useEffect( () => {
+        sortAsc()
+    },[Props.length])
 
     const getProps = () =>{
         fetch(`http://localhost:3001/Props`)
@@ -18,6 +24,17 @@ function EmpDashboard (){
         .then( (res) =>setProps(res))
         .catch( (err) => console.log(err))
             
+    }
+
+    const sortAsc = () => {
+        fetch(`http://localhost:3001/Props?_sort=${Props.Salary}&_order=asc`)
+        .then((res) => res.json())
+        .then( (res) => {
+            console.log(res)
+            // setProps(res)
+            .catch( (err) => console.log(err))
+
+        })
     }
     
 
@@ -27,7 +44,8 @@ function EmpDashboard (){
             Department:inputDepartment,
             Gender:inputGender,
             Role:inputRole,
-            Salary:inputSalary
+            Salary:inputSalary,
+            
         }
         const payloadjson = JSON.stringify(payload)
 
@@ -51,6 +69,12 @@ function EmpDashboard (){
           <input  placeholder="Salary" value={inputSalary} onChange = { (e)=>setInputSalary(e.target.value) }/>
 
           <button onClick={handelAdd}>ADD EMPLOYEE</button>
+          <br /><br /><br /><br />
+          <button onClick={handelAdd}>Show All Departments</button>
+          <br /><br /><br />
+          <button onClick={ sortAsc()}>SORT</button>
+
+
           {Props.map( (item) =>{
               return <div>
                   {"Name :" + item.Name} <br />
